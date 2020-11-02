@@ -19,7 +19,7 @@ nommé requirements.txt)
 - [ ] Le code doit s’exécuter sans demander la moindre information à l’utilisateur
 - [x] Le ransomware parcours la totalité du dossier /tmp de manière récursive pour trouver l’ensemble
 des fichiers présents
-- [] Pour chaque fichier, chiffrer celui-ci dans un nouveau fichier (nom_du_fichier.enc) avec un système
+- [ ] Pour chaque fichier, chiffrer celui-ci dans un nouveau fichier (nom_du_fichier.enc) avec un système
 de chiffrement utilisant de l’AES 256
 - [ ] La clé de chiffrement doit être obtenue depuis un site Internet puis supprimée de la mémoire.
     - [ ] Expliquer quel mécanisme (et son fonctionnement) de Python permet de sauter cette étape
