@@ -21,9 +21,9 @@ nommé requirements.txt)
 des fichiers présents
 - [ ] Pour chaque fichier, chiffrer celui-ci dans un nouveau fichier (nom_du_fichier.enc) avec un système
 de chiffrement utilisant de l’AES 256
-- [ ] La clé de chiffrement doit être obtenue depuis un site Internet puis supprimée de la mémoire.
-    - [ ] Expliquer quel mécanisme (et son fonctionnement) de Python permet de sauter cette étape
-- [ ] Le fichier en clair doit être supprimé de manière sécurisée
+- [x] La clé de chiffrement doit être obtenue depuis un site Internet puis supprimée de la mémoire.
+    - [x] Expliquer quel mécanisme (et son fonctionnement) de Python permet de sauter cette étape
+- [x] Le fichier en clair doit être supprimé de manière sécurisée
 - [ ] Le ransomware doit disposer d’une fonction permettant de déchiffrer les fichiers
 
 ## Utilisation
