@@ -1,2 +1,4 @@
 Path==15.0.0
 requests==2.23.0
+PyCryptodome==3.9.9
+pyfiglet==0.8.post1
