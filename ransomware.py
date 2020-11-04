@@ -78,9 +78,12 @@ def chiffrement(fichiers,cle):
         cipher = AES.new(cle, AES.MODE_CFB, iv)
 
         #Ouverture du fichier en mode lecture - binaire
-        with open(f,'rb') as fin:
-            #Chiffre le contenue lu dans le fichier
-            chiffre = cipher.encrypt(fin.read())
+        try:
+            with open(f,'rb') as fin:
+                #Chiffre le contenue lu dans le fichier
+                chiffre = cipher.encrypt(fin.read())
+        except OSError:
+            continue
 
         mac.update(iv+chiffre)
 
@@ -112,8 +115,12 @@ def dechiffrement(fichiers,cle):
 
     for f in fichiers:
         #Extraction des données du fichier chiffré
-        with open(f,'rb') as fin:
-            data    =   fin.read()
+        try:
+            with open(f,'rb') as fin:
+                data    =   fin.read()
+
+        except OSError:
+            continue
 
         #Récupération du HMAC et génération du HMAC pour faire la conparaison
         verifie =   data[0:16]
