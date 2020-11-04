@@ -32,6 +32,12 @@ Installation des dépendances
 ```bash
 pip3 install -r requirements.txt
 ```
+
+Pour créer un répertoire de test
+```bash
+python3 init.py
+```
+
 Pour lancer le chiffrement
 ```bash
 python3 ransomware.py
