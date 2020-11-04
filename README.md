@@ -41,6 +41,7 @@ Pour lancer le déchiffrement
 ```bash
 python3 ransomware.py -d clé_utilisé_pour_le_chiffrement
 ```
+PS : la clé est disponible [ici](https://perso.esiee.fr/~guillote/ransomware/)
 
 ## Warning
 
